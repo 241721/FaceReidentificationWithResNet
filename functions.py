@@ -1,5 +1,6 @@
 import numpy as np
 import progressbar as pb
+import math
 
 # dzieli tablicę z embeddingami na tożsamości (embeddings) - baza utworzona za pomocą encode_faces.py
 def divide_by_id(embeddings):
@@ -29,32 +30,71 @@ def make_centroids(embeddings_by_id):
 
 # tworzy listy odleglości między daną klasą a innymi klasami z centroidów
 def distances_between_classes(centroids):
-    distances = [[] for x in range(len(centroids))]
+    test_range = 2293 # dla testów DO USUNIĘCIA PÓŹNIEJ
+    distances = [[] for x in range(test_range)] # dla testów DO USUNIĘCIA PÓŹNIEJ
     j = 0
-    for centroid in centroids:
-        for i in range(100):
-            print(type(centroids[i]))
+    for centroid in pb.progressbar(centroids):
+        for i in range(test_range): # dla testów DO USUNIĘCIA PÓŹNIEJ
+            # jeśl
             if type(centroid) != np.ndarray or type(centroids[i]) != np.ndarray:
-                distances[j].append(0)
+                distances[j].append(np.nan)
             else:
                 dist = np.linalg.norm(centroid - centroids[i])
                 distances[j].append(dist)
         j += 1
-        if j == 100: # dla testów DO USUNIĘCIA PÓŹNIEJ
+        if j == test_range: # dla testów DO USUNIĘCIA PÓŹNIEJ
             break
     return distances
 
 
-# min and max between classes
-def fun1():
-    pass
+# min and max between classes DO DOKONCZENIA!!!
+def fun1(distances):
+    mini = 10
+    maxi = 0
+    for i in pb.progressbar(range(len(distances)-1)):
+        for j in range(i, len(distances)):
+            dist = list(filter(lambda a: a > 0.0, distances[j]))
+            dist = [number for number in dist if not math.isnan(number)]
+            if len(dist) == 0:
+                continue
+            m = min(dist)
 
-# średnia odleglość między klasami
-def fun2():
+            if m < mini:
+                mini = m
+                for x in range(len(distances[j])):
+                    if distances[j][x] == mini:
+                        print("min: " + str(mini) + " between classes " + str(x+1) + " and " + str(j+1))
+
+            else:
+                ma = max(dist)
+                if ma > maxi:
+                    maxi = ma
+                    for x in range(len(distances[j])):
+                        if distances[j][x] == maxi:
+                            print("max: " + str(maxi) + " between classes " + str(x+1) + " and " + str(j+1))
+
+
+# średnia odleglość między klasami -- CelebA: 0.7080265435031082
+def mean_dist_between_classes(distances):
+    sum = 0
+    i = 0
+    for dist in distances:
+        d = list(filter(lambda a: a > 0.0, dist))
+        m = np.mean(d)
+        if math.isnan(m):
+            continue
+        else:
+            sum += m
+            i += 1
+    return sum/i
+
+
+# odleglości od centroidu wewnątrz klasy
+def fun3(embeddings_by_id, centroids):
     pass
 
 # średnia odleglość od centroidu wewnątrz klasy
-def fun3():
+def fun3b():
     pass
 
 # najbardziej oddalone zdjęcia wewnątrz klasy
