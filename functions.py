@@ -29,7 +29,21 @@ def make_centroids(embeddings_by_id):
 
 # tworzy listy odleglości między daną klasą a innymi klasami z centroidów
 def distances_between_classes(centroids):
-    pass
+    distances = [[] for x in range(len(centroids))]
+    j = 0
+    for centroid in centroids:
+        for i in range(100):
+            print(type(centroids[i]))
+            if type(centroid) != np.ndarray or type(centroids[i]) != np.ndarray:
+                distances[j].append(0)
+            else:
+                dist = np.linalg.norm(centroid - centroids[i])
+                distances[j].append(dist)
+        j += 1
+        if j == 100: # dla testów DO USUNIĘCIA PÓŹNIEJ
+            break
+    return distances
+
 
 # min and max between classes
 def fun1():
@@ -50,6 +64,5 @@ def fun4():
 #najmniej oddalone zdjęcia między klasami
 def fun5():
     pass
-
 
 
