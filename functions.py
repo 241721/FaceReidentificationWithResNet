@@ -1,6 +1,8 @@
 import numpy as np
 import progressbar as pb
 import math
+import numpy
+from face_recognition import face_distance
 
 # dzieli tablicę z embeddingami na tożsamości (embeddings) - baza utworzona za pomocą encode_faces.py
 def divide_by_id(embeddings):
@@ -90,12 +92,29 @@ def mean_dist_between_classes(distances):
 
 
 # odleglości od centroidu wewnątrz klasy
-def fun3(embeddings_by_id, centroids):
-    pass
+def distances_from_centroid(embeddings_by_id, centroids):
+    test_range = 2293  # dla testów DO USUNIĘCIA PÓŹNIEJ
+    distances = []  # dla testów DO ZMIENIENIA PÓŹNIEJ
+    i = 0
+    for embeddings in embeddings_by_id:
+        if i == 2293:
+            break
+        if len(embeddings) <= 1:
+            distances.append(0.0)
+        else:
+            distances.append(face_distance(embeddings, centroids[i]))
+        i += 1
+    return distances
+
 
 # średnia odleglość od centroidu wewnątrz klasy
-def fun3b():
-    pass
+def mean_distance_from_centroid(distances_from_centroid):       # 0.32818155277386235
+    total = 0
+    for distance in distances_from_centroid:
+        if type(distance) == float:
+            continue
+        total += numpy.ndarray.mean(distance)
+    return total / len(distances_from_centroid)
 
 # najbardziej oddalone zdjęcia wewnątrz klasy
 def fun4():
@@ -104,5 +123,4 @@ def fun4():
 #najmniej oddalone zdjęcia między klasami
 def fun5():
     pass
-
 
